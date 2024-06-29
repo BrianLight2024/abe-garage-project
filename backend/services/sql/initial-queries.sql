@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS `common_services` (
   `service_id` int(11) NOT NULL AUTO_INCREMENT,
   `service_name` varchar(255) NOT NULL,
   `service_description` TEXT,
+  `active_service` int(11) NOT NULL,
   PRIMARY KEY (service_id)
 ) ENGINE=InnoDB;
 
@@ -147,7 +148,7 @@ VALUES (1, 'Admin', 'Admin', 555-555-5555);
 
 -- Password is 123456
 INSERT INTO employee_pass (employee_id, employee_password_hashed)
-VALUES (1, '$2b$10$B6yvl4hECXploM.fCDbXz.brkhmgqNlawh9ZwbfkFX.F3xrs.15Xi');  
+VALUES (1, '$2b$10$eJWYoJzoo9Px8GzbG1YG2.2KNT3wizn/coooM0hrKQT/W94A0.jvq');  
 
 INSERT INTO employee_role (employee_id, company_role_id)
 VALUES (1, 3); 
