@@ -97,6 +97,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `order_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `active_order` int(11) NOT NULL,
   `order_hash` varchar(255) NOT NULL,
+  `order_description` varchar(255) NOT NULL,
   PRIMARY KEY (order_id),
   FOREIGN KEY (employee_id) REFERENCES employee(employee_id), 
   FOREIGN KEY (customer_id) REFERENCES customer_identifier(customer_id),
@@ -125,14 +126,6 @@ CREATE TABLE IF NOT EXISTS `order_services` (
   PRIMARY KEY (order_service_id),
   FOREIGN KEY (order_id) REFERENCES orders(order_id),
   FOREIGN KEY (service_id) REFERENCES common_services(service_id)
-) ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS `order_status` (
-  `order_status_id` int(11) NOT NULL AUTO_INCREMENT,
-  `order_id` int(11) NOT NULL,
-  `order_status` int(11) NOT NULL,
-  PRIMARY KEY (order_status_id),
-  FOREIGN KEY (order_id) REFERENCES orders(order_id)
 ) ENGINE=InnoDB;
 
 -- Add the roles to the database 
