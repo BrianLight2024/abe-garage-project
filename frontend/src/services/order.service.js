@@ -1,7 +1,7 @@
 const api_url = process.env.REACT_APP_API_URL;
 
 // A function to get all orders
-const getAllOrders = async (token) => {
+const getAllOrders = async (token, activeOrder = null) => {
   const requestOptions = {
     method: 'GET',
     headers: {
@@ -9,9 +9,12 @@ const getAllOrders = async (token) => {
       'Authorization': `Bearer ${token}`
     }
   };
-  const response = await fetch(`${api_url}/api/orders`, requestOptions);
+  console.log("activeOrder", activeOrder)
+  const url = activeOrder !== null ? `${api_url}/api/orders?activeOrder=${activeOrder}` : `${api_url}/api/orders`;
+  const response = await fetch(url, requestOptions);
   return response;
 }
+
 
 // A function to get a single order by ID
 const getOrderById = async (orderId, token) => {
