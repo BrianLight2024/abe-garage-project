@@ -3,8 +3,8 @@ const orderService = require('../services/order.service');
 // Get all orders with optional query parameters for limit, sort, and filter
 async function getAllOrders(req, res) {
     try {
-        const { limit, sortby, completed } = req.query;
-        const orders = await orderService.getAllOrders(limit, sortby, completed);
+        const { limit, sortby, activeOrder } = req.query;
+        const orders = await orderService.getAllOrders(limit, sortby, activeOrder);
         res.status(200).json({
             status: "success",
             data: orders

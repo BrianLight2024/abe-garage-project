@@ -3,16 +3,18 @@ const { v4: uuidv4 } = require('uuid');
 
 
 // Get all orders with optional query parameters for limit, sort, and filter
-async function getAllOrders(limit = 10, sortby = 'order_date', completed = null) {
+async function getAllOrders(limit = 10, sortby = 'order_date', activeOrder  = null) {
     let query = "SELECT * FROM orders";
     const params = [];
-    if (completed !== null) {
+    console.log(activeOrder)
+    if (activeOrder  !== null) {
         query += " WHERE active_order = ?";
-        params.push(completed);
+        params.push(activeOrder );
     }
     query += ` ORDER BY ${sortby} DESC LIMIT ?`;
     params.push(parseInt(limit, 10));
-    const [rows] = await conn.query(query, params);
+    console.log(query)
+    const rows = await conn.query(query, params);
     return rows;
 }
 
