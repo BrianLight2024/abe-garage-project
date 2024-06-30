@@ -13,16 +13,12 @@ const PrivateAuthRoute = ({ roles, children }) => {
   useEffect(() => {
     // Retrieve the logged in user from local storage
     const loggedInEmployee = getAuth();
-    // console.log(loggedInEmployee);
     loggedInEmployee.then((response) => {
       if (response.employee_token) {
         // If in here, that means the user is logged in 
-        // console.log(response);
-        // console.log("Set logged in to true");
         setIsLogged(true);
         if (roles && roles.length > 0 && roles.includes(response.employee_role)) {
           // If in here, that means the user is logged and has  authorization to access the route 
-          // console.log("Set authorized to true");
           setIsAuthorized(true);
         }
       }

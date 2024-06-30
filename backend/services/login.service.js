@@ -9,7 +9,6 @@ async function logIn(employeeData) {
   try {
     let returnData = {}; // Object to be returned
     const employee = await employeeService.getEmployeeByEmail(employeeData.employee_email);
-    console.log(employee);
     if (employee.length === 0) {
       returnData = {
         status: "fail",
@@ -31,7 +30,7 @@ async function logIn(employeeData) {
     };
     return returnData;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 

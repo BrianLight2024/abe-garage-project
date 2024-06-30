@@ -21,7 +21,7 @@ async function createEmployee(employee) {
     await query("INSERT INTO employee_role (employee_id, company_role_id) VALUES (?, ?)", [employee_id, employee.company_role_id]);
     createdEmployee = { employee_id: employee_id };
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
   return createdEmployee;
 }

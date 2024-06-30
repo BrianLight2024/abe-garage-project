@@ -83,9 +83,27 @@ async function updateOrder(req, res) {
     }
 }
 
+async function deleteOrder(req, res) {
+
+    try {
+        const orderId = req.params.id;
+        const result = await orderService.deleteOrder(orderId);
+        res.status(200).json({
+            status: 'success',
+            message: result.message,
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: error.message,
+        });
+    }
+}
+
 module.exports = {
     getAllOrders,
     getOrderById,
     addOrder,
-    updateOrder
+    updateOrder,
+    deleteOrder
 };

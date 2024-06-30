@@ -3,17 +3,15 @@ const { v4: uuidv4 } = require('uuid');
 
 
 // Get all orders with optional query parameters for limit, sort, and filter
-async function getAllOrders(limit = 10, sortby = 'order_date', activeOrder  = null) {
+async function getAllOrders(limit = 10, sortby = 'order_date', activeOrder = null) {
     let query = "SELECT * FROM orders";
     const params = [];
-    console.log(activeOrder)
-    if (activeOrder  !== null) {
+    if (activeOrder !== null) {
         query += " WHERE active_order = ?";
-        params.push(activeOrder );
+        params.push(activeOrder);
     }
     query += ` ORDER BY ${sortby} DESC LIMIT ?`;
     params.push(parseInt(limit, 10));
-    console.log(query)
     const rows = await conn.query(query, params);
     return rows;
 }
@@ -57,8 +55,6 @@ async function addOrder(orderData) {
     if (vehicleRows.length === 0) {
         throw new Error("Invalid vehicle_id");
     }
-    console.log("results", orderData)
-
     const query = "INSERT INTO orders (employee_id, customer_id, vehicle_id, order_description, order_hash, active_order) VALUES (?, ?, ?, ?, ?, ?)";
     const result = await conn.query(query, [
         orderData.employee_id,
@@ -69,7 +65,6 @@ async function addOrder(orderData) {
         orderData.active_order
     ]);
     const orderId = result.insertId;
-    console.log("orderId", orderId)
 
     // Insert into order_info table
     const infoQuery = "INSERT INTO order_info (order_id, order_total_price, estimated_completion_date, completion_date, additional_request, notes_for_internal_use, notes_for_customer, additional_requests_completed) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -83,7 +78,6 @@ async function addOrder(orderData) {
         orderData.notes_for_customer || null,
         orderData.additional_requests_completed || 0
     ]);
-    console.log("infoQuery", infoQuery)
 
     // Add order services
     const servicesQuery = "INSERT INTO order_services (order_id, service_id , service_completed) VALUES (?, ? , ? )";
@@ -93,49 +87,63 @@ async function addOrder(orderData) {
         orderData.service_completed
     ]);
 
-    console.log("servicesData", servicesData)
-
-
     return { order_id: orderId, ...orderData };
 }
 
 // Update existing order
-async function updateOrder(orderHash, orderData) {
-    const query = "UPDATE orders SET employee_id = ?, customer_id = ?, vehicle_id = ?, order_description = ?, estimated_completion_date = ?, completion_date = ?, active_order = ? WHERE order_hash = ?";
+async function updateOrder(orderId, orderData) {
+    const query = "UPDATE orders SET employee_id = ?, customer_id = ?, vehicle_id = ?, order_description = ?, active_order = ? WHERE order_id = ?";
     const result = await conn.query(query, [
         orderData.employee_id,
         orderData.customer_id,
         orderData.vehicle_id,
         orderData.order_description,
-        orderData.estimated_completion_date,
-        orderData.completion_date,
         orderData.active_order,
-        orderHash
+        orderId
     ]);
 
-    if (result.affectedRows === 0) return null;
+    // UPDATE into order_info table
+    const infoQuery = `UPDATE order_info 
+                   SET order_total_price = ?, 
+                       estimated_completion_date = ?, 
+                       completion_date = ?
+                   WHERE order_id = ?`;
+    await conn.query(infoQuery, [
+        orderData.order_total_price,
+        orderData.estimated_completion_date || new Date().toISOString(),
+        orderData.completion_date || new Date().toISOString(),
+        orderId
+    ]);
 
-    // get the Order Id internally
-    const queryOrderByHash = "SELECT * FROM orders WHERE order_hash = ?";
-    const rows = await conn.query(queryOrderByHash, [order_hash]);
-    console.log("Query", rows)
-    // Update order services
-    if (orderData.order_services && orderData.order_services.length > 0) {
-        // Delete existing services
-        await conn.query("DELETE FROM order_services WHERE order_id = ?", [rows.order_id]);
 
-        // Add new services
-        const servicesQuery = "INSERT INTO order_services (order_id, service_id) VALUES ?";
-        const servicesData = orderData.order_services.map(service => [rows.orderId, service.service_id]);
-        await conn.query(servicesQuery, [servicesData]);
-    }
+    if (result.affectedRows === 0 && infoQuery.affectedRows == 0) return null; 
 
     return { order_id: rows.orderId, ...orderData };
+}
+
+// Delete an order 
+async function deleteOrder(orderId) {
+
+    // Delete from order_services table first due to foreign key constraints
+    await conn.query("DELETE FROM order_services WHERE order_id = ?", [orderId]);
+
+    // Delete from order_info table
+    await conn.query("DELETE FROM order_info WHERE order_id = ?", [orderId]);
+
+    // Delete from orders table
+    const result = await conn.query("DELETE FROM orders WHERE order_id = ?", [orderId]);
+
+    if (result.affectedRows === 0) {
+        throw new Error('Order not found');
+    }
+
+    return { message: 'Order deleted successfully' };
 }
 
 module.exports = {
     getAllOrders,
     getOrderById,
     addOrder,
-    updateOrder
+    updateOrder,
+    deleteOrder
 };

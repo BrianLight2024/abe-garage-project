@@ -22,7 +22,6 @@ async function getServiceById(req, res) {
       res.status(404).json({ error: 'Service not found' });
     }
   } catch (err) {
-    console.log(err)
     res.status(500).json({ error: 'Failed to get service' });
   }
 }
@@ -34,7 +33,6 @@ async function addService(req, res) {
     const newService = await serviceService.addService(serviceData);
     res.status(201).json(newService);
   } catch (err) {
-    console.log("err", err)
     res.status(500).json({ error: 'Failed to add service' });
   }
 }

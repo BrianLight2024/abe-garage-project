@@ -15,4 +15,7 @@ router.post('/api/order', [authMiddleware.verifyToken, authMiddleware.isAdmin], 
 // Update existing order
 router.put('/api/order/:id', [authMiddleware.verifyToken, authMiddleware.isAdmin], orderController.updateOrder);
 
+// Delete order
+router.delete('/api/order/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, orderController.deleteOrder);
+
 module.exports = router;

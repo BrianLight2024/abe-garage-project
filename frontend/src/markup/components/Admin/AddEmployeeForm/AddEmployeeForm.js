@@ -78,7 +78,6 @@ function AddEmployeeForm(props) {
     const newEmployee = employeeService.createEmployee(formData, loggedInEmployeeToken);
     newEmployee.then((response) => response.json())
       .then((data) => {
-        // console.log(data);
         // If Error is returned from the API server, set the error message
         if (data.error) {
           setServerError(data.error)

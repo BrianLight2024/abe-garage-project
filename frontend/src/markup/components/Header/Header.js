@@ -12,8 +12,6 @@ import { useAuth } from '../../../Contexts/AuthContext';
 function Header(props) {
   // Use the custom hook to access the data in the context 
   const { isLogged, setIsLogged, employee } = useAuth();
-  // console.log(useAuth());
-
   // Log out event handler function
   const logOut = () => {
     // Call the logout function from the login service 

@@ -27,7 +27,6 @@ async function addCustomer(customerData) {
     const customerHash = uuidv4(); // ⇨ '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed'
     const query = "INSERT INTO customer_identifier (customer_email, customer_phone_number, customer_hash) VALUES (?, ?, ?)";
     const result = await conn.query(query, [customerData.customer_email, customerData.customer_phone_number, customerHash]);
-    console.log(result)
     const customerId = result.insertId;
     const query2 = "INSERT INTO customer_info (customer_id, customer_first_name, customer_last_name, active_customer_status) VALUES (?, ?, ?, ?)";
     await conn.query(query2, [customerId, customerData.customer_first_name, customerData.customer_last_name, customerData.active_customer_status]);
@@ -38,7 +37,6 @@ async function addCustomer(customerData) {
 async function updateCustomer(customerId, customerData) {
     const customerIdentifier = await getCustomerById(customerId)
     let result = null;
-    console.log(customerIdentifier.customer_email)
     const query = "UPDATE customer_identifier SET customer_email = ?, customer_phone_number = ? WHERE customer_id = ?";
     result = await conn.query(query, [
         customerData.customer_email != customerIdentifier.customer_email ? customerData.customer_email : customerIdentifier.customer_email,

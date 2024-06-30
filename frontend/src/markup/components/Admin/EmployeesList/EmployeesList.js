@@ -29,7 +29,6 @@ const EmployeesList = () => {
     const allEmployees = employeeService.getAllEmployees(token);
     allEmployees.then((res) => {
       if (!res.ok) {
-        console.log(res.status);
         setApiError(true);
         if (res.status === 401) {
           setApiErrorMessage("Please login again");
@@ -46,7 +45,7 @@ const EmployeesList = () => {
       }
 
     }).catch((err) => {
-      // console.log(err);
+      console.error(err);
     })
   }, []);
 

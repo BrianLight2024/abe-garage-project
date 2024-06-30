@@ -57,7 +57,6 @@ async function updateCustomer(req, res, next) {
             customer
         });
     } catch (error) {
-        console.log(error)
         res.status(400).json({
             error: "Failed to update customer!"
         });

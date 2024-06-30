@@ -1,7 +1,7 @@
 const api_url = process.env.REACT_APP_API_URL;
 
 // A function to get all orders
-const getAllOrders = async (token, activeOrder = null) => {
+const getAllOrders = async (token, limit, activeOrder = null) => {
   const requestOptions = {
     method: 'GET',
     headers: {
@@ -9,8 +9,7 @@ const getAllOrders = async (token, activeOrder = null) => {
       'Authorization': `Bearer ${token}`
     }
   };
-  console.log("activeOrder", activeOrder)
-  const url = activeOrder !== null ? `${api_url}/api/orders?activeOrder=${activeOrder}` : `${api_url}/api/orders`;
+  const url = activeOrder !== null ? `${api_url}/api/orders?limit=${limit}&activeOrder=${activeOrder}` : `${api_url}/api/orders?limit=${limit}`;
   const response = await fetch(url, requestOptions);
   return response;
 }
@@ -57,11 +56,24 @@ const updateOrder = async (orderId, formData, token) => {
   return response;
 }
 
+const deleteOrder = async (orderId, token) => {
+  const requestOptions = {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  };
+  const response = await fetch(`${api_url}/api/order/${orderId}`, requestOptions);
+  return response;
+}
+
 // Export all the functions
 const orderService = {
   getAllOrders,
   getOrderById,
   createOrder,
-  updateOrder
+  updateOrder,
+  deleteOrder
 }
 export default orderService;

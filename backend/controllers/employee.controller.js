@@ -21,7 +21,6 @@ async function createEmployee(req, res, next) {
         });
       }
     } catch (error) {
-      console.log(error);
       res.status(400).json({
         error: "Something went wrong!"
       });
@@ -59,7 +58,6 @@ async function getEmployeeById(req, res, next) {
       });
     }
   } catch (error) {
-    console.log(error);
     res.status(400).json({
       error: "Something went wrong!"
     });
@@ -81,7 +79,6 @@ async function updateEmployee(req, res, next) {
       });
     }
   } catch (error) {
-    console.log(error);
     res.status(400).json({
       error: "Something went wrong!"
     });

@@ -10,14 +10,12 @@ const createEmployee = async (formData, loggedInEmployeeToken) => {
     },
     body: JSON.stringify(formData)
   };
-  console.log(requestOptions);
   const response = await fetch(`${api_url}/api/employee`, requestOptions);
   return response;
 }
 
 // A function to send get request to get all employees
 const getAllEmployees = async (token) => {
-  // console.log(token);
   const requestOptions = {
     method: 'GET',
     headers: {
