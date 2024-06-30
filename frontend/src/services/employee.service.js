@@ -1,4 +1,3 @@
-// Import from the env 
 const api_url = process.env.REACT_APP_API_URL;
 
 // A function to send post request to create a new employee 
@@ -7,7 +6,7 @@ const createEmployee = async (formData, loggedInEmployeeToken) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-access-token': loggedInEmployeeToken
+      'Authorization': `Bearer ${loggedInEmployeeToken}`
     },
     body: JSON.stringify(formData)
   };
@@ -23,7 +22,7 @@ const getAllEmployees = async (token) => {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'x-access-token': token
+      'Authorization': `Bearer ${token}`
     }
   };
   const response = await fetch(`${api_url}/api/employees`, requestOptions);
@@ -35,4 +34,4 @@ const employeeService = {
   createEmployee,
   getAllEmployees
 }
-export default employeeService; 
+export default employeeService;
