@@ -1,6 +1,5 @@
-// src/markup/pages/admin/AdminDashboard.js
 import React from 'react';
-import '../../../assets/styles/AdminDashboard.css';
+import '../../../../assets/styles/AdminDashboard.css';
 
 const AdminDashboard = () => {
   return (

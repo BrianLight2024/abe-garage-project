@@ -11,8 +11,8 @@ import Login from "./markup/pages/Login";
 import AddEmployee from './markup/pages/admin/AddEmployee';
 import Unauthorized from './markup/pages/Unauthorized';
 
-// AdminDashboard
-import AdminDashboard from './markup/pages/admin/AdminDashboard'; 
+// Admin Page
+import Admin from './markup/pages/admin/Admin'; 
 
 // Import the Orders and Customers components 
 import Orders from './markup/pages/admin/Orders';
@@ -49,7 +49,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-        <Route path="/admin" element={<PrivateAuthRoute roles={[3]}><AdminDashboard /></PrivateAuthRoute>} />
+        <Route path="/admin" element={<PrivateAuthRoute roles={[3]}><Admin /></PrivateAuthRoute>} />
         {/* // Add the Orders Route  */}
         <Route path="/admin/orders"
           element={
