@@ -31,10 +31,19 @@ async function getEmployeeByEmail(employee_email) {
   return rows;
 }
 
-async function getAllEmployees() {
-  const rows = await query("SELECT * FROM employee INNER JOIN employee_info ON employee.employee_id = employee_info.employee_id INNER JOIN employee_role ON employee.employee_id = employee_role.employee_id INNER JOIN company_roles ON employee_role.company_role_id = company_roles.company_role_id ORDER BY employee.employee_id DESC limit 10");
+async function getAllEmployees(active_employee = 1) { 
+  const queryStr = `
+    SELECT * FROM employee
+    INNER JOIN employee_info ON employee.employee_id = employee_info.employee_id
+    INNER JOIN employee_role ON employee.employee_id = employee_role.employee_id
+    INNER JOIN company_roles ON employee_role.company_role_id = company_roles.company_role_id
+    WHERE employee.active_employee = ?
+    ORDER BY employee.employee_id DESC
+  `;
+  const rows = await query(queryStr, [active_employee]);
   return rows;
 }
+
 
 async function getEmployeeById(id) {
   const rows = await query("SELECT * FROM employee INNER JOIN employee_info ON employee.employee_id = employee_info.employee_id INNER JOIN employee_role ON employee.employee_id = employee_role.employee_id WHERE employee.employee_id = ?", [id]);
@@ -44,11 +53,18 @@ async function getEmployeeById(id) {
   return rows[0];
 }
 
+// Update an existing employee
 async function updateEmployee(id, employeeData) {
-  const { firstName, lastName, phone, role } = employeeData;
-  await query("UPDATE employee_info SET employee_first_name = ?, employee_last_name = ?, employee_phone = ? WHERE employee_id = ?", [firstName, lastName, phone, id]);
-  await query("UPDATE employee_role SET company_role_id = ? WHERE employee_id = ?", [role, id]);
-  return await getEmployeeById(id);
+  const  { 
+  employee_first_name,
+  employee_last_name ,
+  employee_phone ,
+  active_employee,
+  company_role_id } = employeeData
+  await query("UPDATE employee_info SET employee_first_name = ?, employee_last_name = ?, employee_phone = ? WHERE employee_id = ?", [employee_first_name, employee_last_name, employee_phone, id]);
+  await query("UPDATE employee_role SET company_role_id = ? WHERE employee_id = ?", [company_role_id, id]);
+  await query("UPDATE employee SET  active_employee = ? WHERE employee_id = ?", [ active_employee, id]);
+  return await getAllEmployees(1);
 }
 
 // Export the functions for use in the controller

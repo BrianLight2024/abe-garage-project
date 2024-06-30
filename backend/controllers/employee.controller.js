@@ -29,8 +29,9 @@ async function createEmployee(req, res, next) {
 }
 
 // Create the getAllEmployees controller 
-async function getAllEmployees(req, res, next) {
-  const employees = await employeeService.getAllEmployees();
+async function getAllEmployees(req, res, next) { 
+const { active_employee } = req.query;
+  const employees = await employeeService.getAllEmployees(active_employee);
   if (!employees) {
     res.status(400).json({
       error: "Failed to get all employees!"
