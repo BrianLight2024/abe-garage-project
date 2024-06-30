@@ -30,8 +30,8 @@ async function logIn(req, res, next) {
     const token = jwt.sign(payload, jwtSecret, {
       expiresIn: "24h",
     });
-    // console.log(token);
     const sendBack = {
+      employee_role: payload.employee_role,
       employee_token: token,
     };
     res.status(200).json({

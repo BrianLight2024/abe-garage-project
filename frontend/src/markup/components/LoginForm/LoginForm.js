@@ -51,7 +51,6 @@ function LoginForm() {
             localStorage.setItem("employee", JSON.stringify(response.data));
             setIsLogged(true);
             setEmployee(response.data);
-            console.log("Resp->", response)
             if (response.data.employee_role === 3) {
               setIsAdmin(true);
               navigate('/admin');
