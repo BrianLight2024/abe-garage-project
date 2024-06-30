@@ -1,0 +1,83 @@
+.about-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f8f9fa;
+  }
+  
+  .about-banner {
+    width: 100%;
+    position: relative;
+  }
+  
+  .banner-image {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: cover;
+  }
+  
+  .banner-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .banner-text h1 {
+    font-size: 3rem;
+    margin: 0;
+  }
+  
+  .about-content {
+    max-width: 800px;
+    max-height: 900px;
+    width: 100%;
+    padding: 20px;
+    background-color: white;
+    margin-top: 50px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .story-section,
+  .mission-section,
+  .values-section {
+    margin-bottom: 30px;
+  }
+  
+  .story-section h2,
+  .mission-section h2,
+  .values-section h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #007bff;
+  }
+  
+  .story-section p,
+  .mission-section p {
+    font-size: 1.2rem;
+    color: #666;
+    line-height: 1.6;
+  }
+  
+  .values-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .values-section li {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 10px;
+  }
+  
+  .values-section li strong {
+    color: #007bff;
+  }
+  

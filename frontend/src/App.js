@@ -4,9 +4,16 @@ import React from 'react';
 import { Routes, Route } from "react-router";
 // Import the page components 
 import Home from "./markup/pages/Home";
+import About from './markup/pages/About';
+import Services from './markup/pages/Services';
+import Contact from './markup/pages/Contact';
 import Login from "./markup/pages/Login";
 import AddEmployee from './markup/pages/admin/AddEmployee';
 import Unauthorized from './markup/pages/Unauthorized';
+
+// AdminDashboard
+import AdminDashboard from './markup/pages/admin/AdminDashboard'; 
+
 // Import the Orders and Customers components 
 import Orders from './markup/pages/admin/Orders';
 import Customers from './markup/pages/admin/Customers';
@@ -37,8 +44,12 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/admin" element={<PrivateAuthRoute roles={[3]}><AdminDashboard /></PrivateAuthRoute>} />
         {/* // Add the Orders Route  */}
         <Route path="/admin/orders"
           element={

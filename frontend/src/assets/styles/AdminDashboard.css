@@ -1,0 +1,46 @@
+/* src/markup/pages/admin/AdminDashboard.css */
+
+.admin-dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  
+  .admin-dashboard-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .admin-dashboard-container p {
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin-bottom: 40px;
+  }
+  
+  .admin-dashboard-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .admin-section {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    flex: 1 1 300px;
+  }
+  
+  .admin-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .admin-section p {
+    font-size: 1rem;
+  }
+  
