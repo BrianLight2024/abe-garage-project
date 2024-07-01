@@ -5,7 +5,7 @@ import orderService from "../../../../services/order.service";
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from 'date-fns';
-import "../../../../assets/styles/custom.css" 
+import "../../../../assets/styles/custom.css"
 
 const OrdersList = () => {
     const [orders, setOrders] = useState([]);
@@ -84,11 +84,7 @@ const OrdersList = () => {
 
             if (response.ok) {
                 const updatedOrder = await response.json();
-                setOrders((prevOrders) =>
-                    prevOrders.map((order) =>
-                        order.order_id === orderId ? updatedOrder : order
-                    )
-                );
+                await fetchOrders();
             } else {
                 const errorData = await response.json();
                 console.error("Failed to update order", errorData);
@@ -208,13 +204,13 @@ const OrdersList = () => {
             )}
 
             {currentOrder && (
-                <Modal show={showModal} style={{ marginTop:'150px' }} onHide={() => setShowModal(false)} >
+                <Modal show={showModal} style={{ marginTop: '150px' }} onHide={() => setShowModal(false)} >
                     <Modal.Header closeButton>
                         <Modal.Title>Edit Order</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form>
-                            <Form.Group controlId="orderDescription" style={{margin: '10px 0px'}}>
+                            <Form.Group controlId="orderDescription" style={{ margin: '10px 0px' }}>
                                 <Form.Label>Description</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -224,7 +220,7 @@ const OrdersList = () => {
                                     className="form-control"
                                 />
                             </Form.Group>
-                            <Form.Group controlId="estimatedCompletionDate"  style={{margin: '10px 0px'}}>
+                            <Form.Group controlId="estimatedCompletionDate" style={{ margin: '10px 0px' }}>
                                 <Form.Label>Estimated Completion Date</Form.Label>
                                 <DatePicker
                                     selected={currentOrder.estimated_completion_date ? new Date(currentOrder.estimated_completion_date) : null}
@@ -233,7 +229,7 @@ const OrdersList = () => {
                                     className="form-control"
                                 />
                             </Form.Group>
-                            <Form.Group controlId="completionDate"  style={{margin: '10px 0px'}}>
+                            <Form.Group controlId="completionDate" style={{ margin: '10px 0px' }}>
                                 <Form.Label>Completion Date</Form.Label>
                                 <DatePicker
                                     selected={currentOrder.completion_date ? new Date(currentOrder.completion_date) : null}
@@ -242,7 +238,7 @@ const OrdersList = () => {
                                     className="form-control"
                                 />
                             </Form.Group>
-                            <Form.Group controlId="orderTotalPrice"  style={{margin: '10px 0px'}}>
+                            <Form.Group controlId="orderTotalPrice" style={{ margin: '10px 0px' }}>
                                 <Form.Label>Order Total Price</Form.Label>
                                 <Form.Control
                                     type="number"
@@ -250,7 +246,7 @@ const OrdersList = () => {
                                     onChange={(e) => setCurrentOrder({ ...currentOrder, order_total_price: e.target.value })}
                                     className="form-control"
                                 />
-                            </Form.Group> 
+                            </Form.Group>
                             <Form.Group controlId="activeOrder" >
                                 <Form.Check
                                     type="checkbox"
