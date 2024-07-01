@@ -4,13 +4,13 @@ const serviceService = require('../services/service.service');
 // Get all services
 async function getAllServices(req, res) {
   try {
-    const services = await serviceService.getAllServices();
+    const showInactive = req.query.showInactive || 1;
+    const services = await serviceService.getAllServices(showInactive);
     res.status(200).json(services);
   } catch (err) {
     res.status(500).json({ error: 'Failed to get services' });
   }
-}
-
+} 
 // Get a single service by ID
 async function getServiceById(req, res) {
   const serviceId = req.params.id;

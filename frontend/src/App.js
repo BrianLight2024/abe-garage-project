@@ -19,6 +19,7 @@ import Orders from './markup/pages/admin/Orders';
 import Customers from './markup/pages/admin/Customers';
 // Import the Employees component 
 import Employees from './markup/pages/admin/Employees';
+import Service from './markup/pages/admin/Service';
 
 // Import the css files 
 import "./assets/template_assets/css/bootstrap.css";
@@ -72,14 +73,21 @@ function App() {
               <AddEmployee />
             </PrivateAuthRoute>
           } />
-        {/* 
-          Customers (/admin/customers) - managers and admins
-          Orders (/admin/orders) - Can be accessed by all employees
-          Add employee (/admin/add-employee) - admins only 
-            - Admin: 3 
-            - Manager: 2 
-            - Employee: 1 
-        */}
+
+<Route path="/admin/orders"
+          element={
+            <PrivateAuthRoute roles={[1, 2, 3]}>
+              <Orders />
+            </PrivateAuthRoute>
+          } />
+
+<Route path="/admin/service"
+          element={
+            <PrivateAuthRoute roles={[1, 2, 3]}>
+              <Service />
+            </PrivateAuthRoute>
+          } />
+         
       </Routes>
       <Footer />
     </>

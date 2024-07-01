@@ -1,7 +1,7 @@
 const api_url = process.env.REACT_APP_API_URL;
 
 // A function to get all services
-const getAllServices = async (token) => {
+const getAllServices = async (token,showInactive) => {
   const requestOptions = {
     method: 'GET',
     headers: {
@@ -9,7 +9,7 @@ const getAllServices = async (token) => {
       'Authorization': `Bearer ${token}`
     }
   };
-  const response = await fetch(`${api_url}/api/services`, requestOptions);
+  const response = await fetch(`${api_url}/api/services?showInactive=${showInactive}`, requestOptions);
   return response;
 }
 

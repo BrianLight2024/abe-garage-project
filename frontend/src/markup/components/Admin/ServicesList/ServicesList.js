@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Modal, Form } from 'react-bootstrap';
 import { useAuth } from "../../../../Contexts/AuthContext";
-import customerService from "../../../../services/customer.service";
+import serviceService from "../../../../services/service.service"; // Import the service for services
 import { format } from 'date-fns';
 
-const CustomersList = () => {
-    const [customers, setCustomers] = useState([]);
+const ServicesList = () => {
+    const [services, setServices] = useState([]);
     const [apiError, setApiError] = useState(false);
     const [apiErrorMessage, setApiErrorMessage] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [currentCustomer, setCurrentCustomer] = useState(null);
+    const [currentService, setCurrentService] = useState(null);
     const [showInactive, setShowInactive] = useState(false);
     const { employee } = useAuth();
     let token = null;
@@ -17,9 +17,9 @@ const CustomersList = () => {
         token = employee.employee_token;
     }
 
-    const fetchCustomers = async (token, showInactive, setApiError, setApiErrorMessage, setCustomers) => {
+    const fetchServices = async (token, showInactive, setApiError, setApiErrorMessage, setServices) => {
         try {
-            const response = await customerService.getAllCustomers(token, showInactive ? 0 : 1);
+            const response = await serviceService.getAllServices(token, showInactive ? 0 : 1);
             if (!response.ok) {
                 setApiError(true);
                 if (response.status === 401) {
@@ -31,47 +31,45 @@ const CustomersList = () => {
                 }
             } else {
                 const data = await response.json();
-                setCustomers(data.customers || []);
+                setServices(data || []);
             }
         } catch (error) {
             setApiError(true);
-            setApiErrorMessage("An error occurred while fetching customers");
+            setApiErrorMessage("An error occurred while fetching services");
         }
     };
 
     useEffect(() => {
-        fetchCustomers(token, showInactive, setApiError, setApiErrorMessage, setCustomers);
+        fetchServices(token, showInactive, setApiError, setApiErrorMessage, setServices);
     }, [token, showInactive]);
 
-    const handleEdit = (customer) => {
-        setCurrentCustomer(customer);
+    const handleEdit = (service) => {
+        setCurrentService(service);
         setShowModal(true);
     };
 
     const handleSave = async () => {
         try {
             const token = employee?.employee_token;
-            const customerId = currentCustomer.customer_id;
+            const serviceId = currentService.service_id;
 
             const formData = {
-                customer_first_name: currentCustomer.customer_first_name,
-                customer_last_name: currentCustomer.customer_last_name,
-                customer_email: currentCustomer.customer_email,
-                customer_phone_number: currentCustomer.customer_phone_number,
-                active_customer_status: currentCustomer.active_customer_status
+                service_name: currentService.service_name,
+                service_description: currentService.service_description,
+                active_service: currentService.active_service,
             };
 
-            const response = await customerService.updateCustomer(customerId, formData, token);
+            const response = await serviceService.updateService(serviceId, formData, token);
 
             if (response.ok) {
-                const updatedCustomer = await response.json();
-                await fetchCustomers(token, showInactive, setApiError, setApiErrorMessage, setCustomers);
+                const updatedService = await response.json();
+                await fetchServices(token, showInactive, setApiError, setApiErrorMessage, setServices);
             } else {
                 const errorData = await response.json();
-                console.error("Failed to update customer", errorData);
+                console.error("Failed to update service", errorData);
             }
         } catch (error) {
-            console.error("An error occurred while updating the customer", error);
+            console.error("An error occurred while updating the service", error);
         } finally {
             setShowModal(false);
         }
@@ -79,7 +77,7 @@ const CustomersList = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setCurrentCustomer(prevState => ({
+        setCurrentService(prevState => ({
             ...prevState,
             [name]: value
         }));
@@ -103,44 +101,38 @@ const CustomersList = () => {
                 <section className="contact-section">
                     <div className="auto-container">
                         <div className="contact-title">
-                            <h2>Customers</h2>
+                            <h2>Services</h2>
                         </div>
-                        <div className="customer-controls">
+                        <div className="service-controls">
                             <Button
                                 variant="primary"
                                 onClick={() => setShowInactive(!showInactive)}
                                 style={{ marginBottom: '10px', marginTop: '10px' }}
                             >
-                                {showInactive ? 'Show Active Customers' : 'Show Inactive Customers'}
+                                {showInactive ? 'Show Active Services' : 'Show Inactive Services'}
                             </Button>
                         </div>
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
                                     <th>Active</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Added Date</th>
+                                    <th>Service Name</th>
+                                    <th>Description</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {customers.map((customer) => (
-                                    <tr key={customer.customer_id}>
-                                        <td>{customer.active_customer_status ? "Yes" : "No"}</td>
-                                        <td>{customer.customer_first_name}</td>
-                                        <td>{customer.customer_last_name}</td>
-                                        <td>{customer.customer_email}</td>
-                                        <td>{customer.customer_phone_number}</td>
-                                        <td>{isValidDate(customer.customer_added_date) ? format(new Date(customer.customer_added_date), 'MM-dd-yyyy | kk:mm') : 'N/A'}</td>
+                                {services.map((service) => (
+                                    <tr key={service.service_id}>
+                                        <td>{service.active_service ? "Yes" : "No"}</td>
+                                        <td>{service.service_name}</td>
+                                        <td>{service.service_description}</td>
                                         <td>
                                             <Button
                                                 variant="warning"
                                                 size="sm"
                                                 style={{ width: '55px', marginBottom: '5px', borderRadius: '5px', marginRight: '5px' }}
-                                                onClick={() => handleEdit(customer)}
+                                                onClick={() => handleEdit(service)}
                                             >
                                                 Edit
                                             </Button>
@@ -153,55 +145,37 @@ const CustomersList = () => {
                 </section>
             )}
 
-            {currentCustomer && (
+            {currentService && (
                 <Modal show={showModal} onHide={() => setShowModal(false)}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Edit Customer</Modal.Title>
+                        <Modal.Title>Edit Service</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form>
-                            <Form.Group controlId="customerFirstName">
-                                <Form.Label>First Name</Form.Label>
+                            <Form.Group controlId="serviceName">
+                                <Form.Label>Service Name</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    name="customer_first_name"
-                                    value={currentCustomer.customer_first_name}
+                                    name="service_name"
+                                    value={currentService.service_name}
                                     onChange={handleChange}
                                 />
                             </Form.Group>
-                            <Form.Group controlId="customerLastName">
-                                <Form.Label>Last Name</Form.Label>
+                            <Form.Group controlId="serviceDescription">
+                                <Form.Label>Description</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    name="customer_last_name"
-                                    value={currentCustomer.customer_last_name}
+                                    name="service_description"
+                                    value={currentService.service_description}
                                     onChange={handleChange}
                                 />
                             </Form.Group>
-                            <Form.Group controlId="customerEmail">
-                                <Form.Label>Email</Form.Label>
-                                <Form.Control
-                                    type="email"
-                                    name="customer_email"
-                                    value={currentCustomer.customer_email}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
-                            <Form.Group controlId="customerPhoneNumber">
-                                <Form.Label>Phone</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="customer_phone_number"
-                                    value={currentCustomer.customer_phone_number}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
-                            <Form.Group controlId="activeCustomerStatus">
+                            <Form.Group controlId="activeService">
                                 <Form.Check
                                     type="checkbox"
-                                    label="Active Customer"
-                                    checked={currentCustomer.active_customer_status === 1}
-                                    onChange={(e) => setCurrentCustomer({ ...currentCustomer, active_customer_status: e.target.checked ? 1 : 0 })}
+                                    label="Active Service"
+                                    checked={currentService.active_service === 1}
+                                    onChange={(e) => setCurrentService({ ...currentService, active_service: e.target.checked ? 1 : 0 })}
                                     style={{ textAlign: 'center' }} // Center the checkbox
                                 />
                             </Form.Group>
@@ -221,4 +195,4 @@ const CustomersList = () => {
     );
 }
 
-export default CustomersList;
+export default ServicesList;

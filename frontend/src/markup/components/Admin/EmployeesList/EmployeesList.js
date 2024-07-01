@@ -110,7 +110,7 @@ const EmployeesList = () => {
                             <Button
                                 variant="primary"
                                 onClick={() => setShowInactive(!showInactive)}
-                                style={{ marginLeft: '10px', marginTop: '10px' }}
+                                style={{ marginBottom: '10px', marginTop: '10px' }}
                             >
                                 {showInactive ? 'Show Active Employees' : 'Show Inactive Employees'}
                             </Button>
