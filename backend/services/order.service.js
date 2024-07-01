@@ -4,10 +4,14 @@ const { v4: uuidv4 } = require('uuid');
 
 // Get all orders with optional query parameters for limit, sort, and filter
 async function getAllOrders(limit = 10, sortby = 'order_date', activeOrder = null) {
-    let query = "SELECT * FROM orders";
+    let query = `
+        SELECT orders.*, order_info.order_total_price, order_info.estimated_completion_date, order_info.completion_date
+        FROM orders
+        LEFT JOIN order_info ON orders.order_id = order_info.order_id
+    `;
     const params = [];
     if (activeOrder !== null) {
-        query += " WHERE active_order = ?";
+        query += " WHERE orders.active_order = ?";
         params.push(activeOrder);
     }
     query += ` ORDER BY ${sortby} DESC LIMIT ?`;
@@ -15,6 +19,7 @@ async function getAllOrders(limit = 10, sortby = 'order_date', activeOrder = nul
     const rows = await conn.query(query, params);
     return rows;
 }
+
 
 // Get single order by ID
 async function getOrderById(orderId) {

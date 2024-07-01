@@ -154,7 +154,7 @@ const CustomersList = () => {
             )}
 
             {currentCustomer && (
-                <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal show={showModal} style={{ marginTop:'140px' }}  onHide={() => setShowModal(false)}>
                     <Modal.Header closeButton>
                         <Modal.Title>Edit Customer</Modal.Title>
                     </Modal.Header>

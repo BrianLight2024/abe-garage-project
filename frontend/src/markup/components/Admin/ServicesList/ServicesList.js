@@ -146,7 +146,7 @@ const ServicesList = () => {
             )}
 
             {currentService && (
-                <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal show={showModal} style={{ marginTop:'150px' }}  onHide={() => setShowModal(false)}>
                     <Modal.Header closeButton>
                         <Modal.Title>Edit Service</Modal.Title>
                     </Modal.Header>
@@ -170,7 +170,7 @@ const ServicesList = () => {
                                     onChange={handleChange}
                                 />
                             </Form.Group>
-                            <Form.Group controlId="activeService">
+                            <Form.Group controlId="activeService" style={{marginTop: '10px'}}>
                                 <Form.Check
                                     type="checkbox"
                                     label="Active Service"

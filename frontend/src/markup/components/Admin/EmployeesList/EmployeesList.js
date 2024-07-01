@@ -157,7 +157,7 @@ const EmployeesList = () => {
             )}
 
             {currentEmployee && (
-                <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal show={showModal} style={{ marginTop:'150px' }}  onHide={() => setShowModal(false)}>
                     <Modal.Header closeButton>
                         <Modal.Title>Edit Employee</Modal.Title>
                     </Modal.Header>

@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Modal, Form } from 'react-bootstrap';
 import { useAuth } from "../../../../Contexts/AuthContext";
 import orderService from "../../../../services/order.service";
-import { format } from 'date-fns'; // Import date-fns for formatting dates
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
+import { format } from 'date-fns';
+import "../../../../assets/styles/custom.css" 
 
 const OrdersList = () => {
     const [orders, setOrders] = useState([]);
@@ -17,29 +20,30 @@ const OrdersList = () => {
     if (employee) {
         token = employee.employee_token;
     }
-    useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                const response = await orderService.getAllOrders(token, limit, showCompleted ? 0 : 1); // Fetch based on active_order
-                if (!response.ok) {
-                    setApiError(true);
-                    if (response.status === 401) {
-                        setApiErrorMessage("Please login again");
-                    } else if (response.status === 403) {
-                        setApiErrorMessage("You are not authorized to view this page");
-                    } else {
-                        setApiErrorMessage("Please try again later");
-                    }
-                } else {
-                    const data = await response.json();
-                    setOrders(data.data || []);
-                }
-            } catch (error) {
-                setApiError(true);
-                setApiErrorMessage("An error occurred while fetching orders");
-            }
-        };
 
+    const fetchOrders = async () => {
+        try {
+            const response = await orderService.getAllOrders(token, limit, showCompleted ? 0 : 1);
+            if (!response.ok) {
+                setApiError(true);
+                if (response.status === 401) {
+                    setApiErrorMessage("Please login again");
+                } else if (response.status === 403) {
+                    setApiErrorMessage("You are not authorized to view this page");
+                } else {
+                    setApiErrorMessage("Please try again later");
+                }
+            } else {
+                const data = await response.json();
+                setOrders(data.data || []);
+            }
+        } catch (error) {
+            setApiError(true);
+            setApiErrorMessage("An error occurred while fetching orders");
+        }
+    };
+
+    useEffect(() => {
         fetchOrders();
     }, [token, limit, showCompleted]);
 
@@ -62,29 +66,23 @@ const OrdersList = () => {
         }
     };
 
-
     const handleSave = async () => {
         try {
-            const token = employee?.employee_token;
             const orderId = currentOrder.order_id;
-
             const formData = {
                 employee_id: currentOrder.employee_id,
                 customer_id: currentOrder.customer_id,
                 vehicle_id: currentOrder.vehicle_id,
                 order_description: currentOrder.order_description,
-                estimated_completion_date: currentOrder.estimated_completion_date ?? new Date().toISOString(),
-                completion_date: currentOrder.completion_date ?? new Date().toISOString(),
+                estimated_completion_date: currentOrder.estimated_completion_date ? new Date(currentOrder.estimated_completion_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+                completion_date: currentOrder.completion_date ? new Date(currentOrder.completion_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
                 active_order: currentOrder.active_order,
                 order_total_price: parseInt(currentOrder.order_total_price)
-                //   order_services: currentOrder.order_services // Add this if you have services to update
             };
 
             const response = await orderService.updateOrder(orderId, formData, token);
 
             if (response.ok) {
-                // Assuming you have a way to update the order list in the state
-                // You might need to fetch the updated list or update the specific order in the state
                 const updatedOrder = await response.json();
                 setOrders((prevOrders) =>
                     prevOrders.map((order) =>
@@ -108,6 +106,17 @@ const OrdersList = () => {
             ...prevState,
             [name]: value
         }));
+    };
+
+    const handleChangeDate = (date, field) => {
+        setCurrentOrder(prevState => ({
+            ...prevState,
+            [field]: date.toISOString().split('T')[0]
+        }));
+    };
+
+    const isValidDate = (date) => {
+        return !isNaN(Date.parse(date));
     };
 
     return (
@@ -134,12 +143,13 @@ const OrdersList = () => {
                                     value={limit}
                                     onChange={(e) => setLimit(parseInt(e.target.value, 10))}
                                     min="1"
+                                    className="form-control"
                                 />
                             </Form.Group>
                             <Button
                                 variant="primary"
                                 onClick={() => setShowCompleted(!showCompleted)}
-                                style={{ marginLeft: '0px' , marginTop: '10px' }}
+                                style={{ marginBottom: '10px', marginTop: '10px' }}
                             >
                                 {showCompleted ? 'Show Active Orders' : 'Show Completed Orders'}
                             </Button>
@@ -175,7 +185,7 @@ const OrdersList = () => {
                                             <Button
                                                 variant="warning"
                                                 size="sm"
-                                                style={{ width: '55px', marginBottom: '5px',  borderRadius: '5px', marginRight: '5px' }}
+                                                style={{ width: '55px', marginBottom: '5px', borderRadius: '5px', marginRight: '5px' }}
                                                 onClick={() => handleEdit(order)}
                                             >
                                                 Edit
@@ -198,48 +208,50 @@ const OrdersList = () => {
             )}
 
             {currentOrder && (
-                <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal show={showModal} style={{ marginTop:'150px' }} onHide={() => setShowModal(false)} >
                     <Modal.Header closeButton>
                         <Modal.Title>Edit Order</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form>
-                            <Form.Group controlId="orderDescription">
+                            <Form.Group controlId="orderDescription" style={{margin: '10px 0px'}}>
                                 <Form.Label>Description</Form.Label>
                                 <Form.Control
                                     type="text"
                                     name="order_description"
                                     value={currentOrder.order_description}
                                     onChange={handleChange}
+                                    className="form-control"
                                 />
                             </Form.Group>
-                            <Form.Group controlId="estimatedCompletionDate">
+                            <Form.Group controlId="estimatedCompletionDate"  style={{margin: '10px 0px'}}>
                                 <Form.Label>Estimated Completion Date</Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    name="estimated_completion_date"
-                                    value={currentOrder.estimated_completion_date}
-                                    onChange={handleChange}
+                                <DatePicker
+                                    selected={currentOrder.estimated_completion_date ? new Date(currentOrder.estimated_completion_date) : null}
+                                    onChange={(date) => handleChangeDate(date, 'estimated_completion_date')}
+                                    dateFormat="yyyy-MM-dd"
+                                    className="form-control"
                                 />
                             </Form.Group>
-                            <Form.Group controlId="completionDate">
+                            <Form.Group controlId="completionDate"  style={{margin: '10px 0px'}}>
                                 <Form.Label>Completion Date</Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    name="completion_date"
-                                    value={currentOrder.completion_date}
-                                    onChange={handleChange}
+                                <DatePicker
+                                    selected={currentOrder.completion_date ? new Date(currentOrder.completion_date) : null}
+                                    onChange={(date) => handleChangeDate(date, 'completion_date')}
+                                    dateFormat="yyyy-MM-dd"
+                                    className="form-control"
                                 />
                             </Form.Group>
-                            <Form.Group controlId="orderTotalPrice">
+                            <Form.Group controlId="orderTotalPrice"  style={{margin: '10px 0px'}}>
                                 <Form.Label>Order Total Price</Form.Label>
                                 <Form.Control
                                     type="number"
                                     value={currentOrder.order_total_price || ''}
                                     onChange={(e) => setCurrentOrder({ ...currentOrder, order_total_price: e.target.value })}
+                                    className="form-control"
                                 />
-                            </Form.Group>
-                            <Form.Group controlId="activeOrder">
+                            </Form.Group> 
+                            <Form.Group controlId="activeOrder" >
                                 <Form.Check
                                     type="checkbox"
                                     label="Order Completed"
