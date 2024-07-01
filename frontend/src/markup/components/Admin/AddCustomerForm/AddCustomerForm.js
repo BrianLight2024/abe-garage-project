@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
-import orderService from '../../../../services/order.service';
+import customerService from '../../../../services/customer.service';
 import { useAuth } from "../../../../Contexts/AuthContext";
 
 function AddCustomerForm() {
-  const [employee_id, setEmployeeId] = useState('');
-  const [customer_id, setCustomerId] = useState('');
-  const [vehicle_id, setVehicleId] = useState('');
-  const [order_description, setOrderDescription] = useState('');
-  const [order_total_price, setOrderTotalPrice] = useState('');
-  const [active_order, setActiveOrder] = useState(1);
-  const [estimated_completion_date, setEstimatedCompletionDate] = useState('');
-  const [completion_date, setCompletionDate] = useState('');
+  const [customer_email, setCustomerEmail] = useState('');
+  const [customer_phone_number, setCustomerPhoneNumber] = useState('');
+  const [customer_first_name, setCustomerFirstName] = useState('');
+  const [customer_last_name, setCustomerLastName] = useState('');
+  const [active_customer_status, setActiveCustomerStatus] = useState(1);
   const [success, setSuccess] = useState(false);
   const [serverError, setServerError] = useState('');
 
@@ -23,18 +20,15 @@ function AddCustomerForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = {
-      employee_id,
-      customer_id,
-      vehicle_id,
-      order_description,
-      order_total_price: parseFloat(order_total_price),
-      active_order,
-      estimated_completion_date,
-      completion_date
+      customer_email,
+      customer_phone_number,
+      customer_first_name,
+      customer_last_name,
+      active_customer_status
     };
-    
-    const newOrder = orderService.createOrder(formData, loggedInEmployeeToken);
-    newOrder.then((response) => response.json())
+
+    const newCustomer = customerService.createCustomer(formData, loggedInEmployeeToken);
+    newCustomer.then((response) => response.json())
       .then((data) => {
         if (data.error) {
           setServerError(data.error)
@@ -42,7 +36,7 @@ function AddCustomerForm() {
           setSuccess(true);
           setServerError('')
           setTimeout(() => {
-            window.location.href = '/admin/orders';
+            window.location.href = '/admin/customers';
           }, 2000);
         }
       })
@@ -61,7 +55,7 @@ function AddCustomerForm() {
     <section className="contact-section">
       <div className="auto-container">
         <div className="contact-title">
-          <h2>Add a new order</h2>
+          <h2>Add a new customer</h2>
         </div>
         <div className="row clearfix">
           <div className="form-column col-lg-7">
@@ -71,28 +65,25 @@ function AddCustomerForm() {
                   <div className="row clearfix">
                     <div className="form-group col-md-12">
                       {serverError && <div className="validation-error" role="alert">{serverError}</div>}
-                      <input type="text" name="employee_id" value={employee_id} onChange={event => setEmployeeId(event.target.value)} placeholder="Employee ID" required />
+                      <input type="email" name="customer_email" value={customer_email} onChange={event => setCustomerEmail(event.target.value)} placeholder="Customer Email" required />
                     </div>
                     <div className="form-group col-md-12">
-                      <input type="text" name="customer_id" value={customer_id} onChange={event => setCustomerId(event.target.value)} placeholder="Customer ID" required />
+                      <input type="text" name="customer_phone_number" value={customer_phone_number} onChange={event => setCustomerPhoneNumber(event.target.value)} placeholder="Customer Phone Number" required />
                     </div>
                     <div className="form-group col-md-12">
-                      <input type="text" name="vehicle_id" value={vehicle_id} onChange={event => setVehicleId(event.target.value)} placeholder="Vehicle ID" required />
+                      <input type="text" name="customer_first_name" value={customer_first_name} onChange={event => setCustomerFirstName(event.target.value)} placeholder="Customer First Name" required />
                     </div>
                     <div className="form-group col-md-12">
-                      <textarea name="order_description" value={order_description} onChange={event => setOrderDescription(event.target.value)} placeholder="Order Description" required></textarea>
+                      <input type="text" name="customer_last_name" value={customer_last_name} onChange={event => setCustomerLastName(event.target.value)} placeholder="Customer Last Name" required />
                     </div>
                     <div className="form-group col-md-12">
-                      <input type="number" name="order_total_price" value={order_total_price} onChange={event => setOrderTotalPrice(event.target.value)} placeholder="Order Total Price" required />
+                      <select name="active_customer_status" value={active_customer_status} onChange={event => setActiveCustomerStatus(event.target.value)} className="custom-select-box">
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
+                      </select>
                     </div>
                     <div className="form-group col-md-12">
-                      <input type="date" name="estimated_completion_date" value={estimated_completion_date} onChange={event => setEstimatedCompletionDate(event.target.value)} placeholder="Estimated Completion Date" required />
-                    </div>
-                    <div className="form-group col-md-12">
-                      <input type="date" name="completion_date" value={completion_date} onChange={event => setCompletionDate(event.target.value)} placeholder="Completion Date" required />
-                    </div>
-                    <div className="form-group col-md-12">
-                      <button className="theme-btn btn-style-one" type="submit" data-loading-text="Please wait..."><span>Add Order</span></button>
+                      <button className="theme-btn btn-style-one" type="submit" data-loading-text="Please wait..."><span>Add Customer</span></button>
                     </div>
                   </div>
                 </form>
