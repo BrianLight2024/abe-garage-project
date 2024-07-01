@@ -2,15 +2,20 @@ const conn = require("../config/db.config");
 const { v4: uuidv4 } = require('uuid');
 
 // Get all customers
-async function getAllCustomers(limit, sortby) {
+async function getAllCustomers( sortby, active_customer_status) {
     let query = "SELECT * FROM customer_identifier INNER JOIN customer_info ON customer_identifier.customer_id = customer_info.customer_id";
+    const params = [];
+
+    if (active_customer_status !== undefined && active_customer_status !== null) {
+        query += " WHERE customer_info.active_customer_status = ?";
+        params.push(active_customer_status);
+    }
+
     if (sortby) {
         query += ` ORDER BY ${sortby}`;
     }
-    if (limit) {
-        query += ` LIMIT ${limit}`;
-    }
-    const [rows] = await conn.query(query);
+
+    const rows = await conn.query(query, params);
     return rows;
 }
 

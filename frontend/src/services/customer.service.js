@@ -1,7 +1,7 @@
 const api_url = process.env.REACT_APP_API_URL;
 
 // A function to get all customers
-const getAllCustomers = async (token) => {
+const getAllCustomers = async (token, active_customer_status) => {
   const requestOptions = {
     method: 'GET',
     headers: {
@@ -9,7 +9,7 @@ const getAllCustomers = async (token) => {
       'Authorization': `Bearer ${token}`
     }
   };
-  const response = await fetch(`${api_url}/api/customers`, requestOptions);
+  const response = await fetch(`${api_url}/api/customers?active_customer_status=${active_customer_status}`, requestOptions);
   return response;
 }
 

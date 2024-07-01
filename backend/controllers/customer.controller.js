@@ -3,11 +3,10 @@ const customerService = require('../services/customer.service');
 // Get all customers
 async function getAllCustomers(req, res, next) {
     try {
-        const limit = req.query.limit || 10;
         const sortby = req.query.sortby || 'customer_added_date';
-        const customers = await customerService.getAllCustomers(limit, sortby);
+        const active_customer_status = req.query.active_customer_status || 1;
+        const customers = await customerService.getAllCustomers(sortby, active_customer_status);
         res.status(200).json({
-            limit,
             customers
         });
     } catch (error) {
