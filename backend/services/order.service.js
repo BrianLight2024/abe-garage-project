@@ -10,7 +10,7 @@ async function getAllOrders(limit = 10, activeOrder = 1) {
         WHERE orders.active_order = ${activeOrder}
         ORDER BY order_date DESC LIMIT ${limit}
     `;
-  const rows = await conn.query(query, params);
+  const rows = await conn.query(query);
   return rows;
 }
 
