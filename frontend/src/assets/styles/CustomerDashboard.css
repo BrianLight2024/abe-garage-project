@@ -1,0 +1,25 @@
+.customer-dashboard {
+  padding: 20px;
+}
+
+.dashboard-title {
+  margin-bottom: 20px;
+}
+
+.pending-order {
+  background-color: #ffd54d !important; /* Yellow */
+}
+
+.completed-order {
+  background-color: #d4edda !important; /* Green */
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 20px;
+}
+
+.table-bordered td,
+.table-bordered th {
+  border: 1px solid #99a6b2 !important;
+}

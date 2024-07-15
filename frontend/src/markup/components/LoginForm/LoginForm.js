@@ -1,61 +1,64 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from "react-router-dom";
-import loginService from '../../../services/login.service';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import loginService from "../../../services/login.service";
 import { useAuth } from "../../../Contexts/AuthContext";
 
 function LoginForm() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [employee_email, setEmail] = useState('');
-  const [employee_password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [serverError, setServerError] = useState('');
+  const [employee_email, setEmail] = useState("");
+  const [employee_password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [serverError, setServerError] = useState("");
   const { setIsLogged, setEmployee, setIsAdmin } = useAuth();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     let valid = true;
     if (!employee_email) {
-      setEmailError('Please enter your email address first');
+      setEmailError("Please enter your email address first");
       valid = false;
-    } else if (!employee_email.includes('@')) {
-      setEmailError('Invalid email format');
+    } else if (!employee_email.includes("@")) {
+      setEmailError("Invalid email format");
     } else {
       const regex = /^\S+@\S+\.\S+$/;
       if (!regex.test(employee_email)) {
-        setEmailError('Invalid email format');
+        setEmailError("Invalid email format");
         valid = false;
       } else {
-        setEmailError('');
+        setEmailError("");
       }
     }
     if (!employee_password || employee_password.length < 6) {
-      setPasswordError('Password must be at least 6 characters long');
+      setPasswordError("Password must be at least 6 characters long");
       valid = false;
     } else {
-      setPasswordError('');
+      setPasswordError("");
     }
     if (!valid) {
       return;
     }
     const formData = {
       employee_email,
-      employee_password
+      employee_password,
     };
-    const loginEmployee = loginService.logIn(formData);
-    loginEmployee.then((response) => response.json())
+
+    await loginService
+      .logIn(formData)
+      .then((response) => response.json())
       .then((response) => {
-        if (response.status === 'success') {
+        if (response.status === "success") {
           if (response.data.employee_token) {
             localStorage.setItem("employee", JSON.stringify(response.data));
             setIsLogged(true);
             setEmployee(response.data);
             if (response.data.employee_role === 3) {
               setIsAdmin(true);
-              navigate('/admin');
+              navigate("/admin");
+              window.location.reload();
             } else {
-              navigate('/');
+              navigate("/");
+              window.location.reload();
             }
           }
         } else {
@@ -63,7 +66,7 @@ function LoginForm() {
         }
       })
       .catch((err) => {
-        setServerError('An error has occurred. Please try again later.' + err);
+        setServerError("An error has occurred. Please try again later." + err);
       });
   };
 
@@ -80,16 +83,46 @@ function LoginForm() {
                 <form onSubmit={handleSubmit}>
                   <div className="row clearfix">
                     <div className="form-group col-md-12">
-                      {serverError && <div className="validation-error" role="alert">{serverError}</div>}
-                      <input type="email" name="employee_email" value={employee_email} onChange={(event) => setEmail(event.target.value)} placeholder="Email" />
-                      {emailError && <div className="validation-error" role="alert">{emailError}</div>}
+                      {serverError && (
+                        <div className="validation-error" role="alert">
+                          {serverError}
+                        </div>
+                      )}
+                      <input
+                        type="email"
+                        name="employee_email"
+                        value={employee_email}
+                        onChange={(event) => setEmail(event.target.value)}
+                        placeholder="Email"
+                      />
+                      {emailError && (
+                        <div className="validation-error" role="alert">
+                          {emailError}
+                        </div>
+                      )}
                     </div>
                     <div className="form-group col-md-12">
-                      <input type="password" name="employee_password" value={employee_password} onChange={(event) => setPassword(event.target.value)} placeholder="Password" />
-                      {passwordError && <div className="validation-error" role="alert">{passwordError}</div>}
+                      <input
+                        type="password"
+                        name="employee_password"
+                        value={employee_password}
+                        onChange={(event) => setPassword(event.target.value)}
+                        placeholder="Password"
+                      />
+                      {passwordError && (
+                        <div className="validation-error" role="alert">
+                          {passwordError}
+                        </div>
+                      )}
                     </div>
                     <div className="form-group col-md-12">
-                      <button className="theme-btn btn-style-one" type="submit" data-loading-text="Please wait..."><span>Login</span></button>
+                      <button
+                        className="theme-btn btn-style-one"
+                        type="submit"
+                        data-loading-text="Please wait..."
+                      >
+                        <span>Login</span>
+                      </button>
                     </div>
                   </div>
                 </form>

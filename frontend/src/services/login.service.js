@@ -1,24 +1,25 @@
 const api_url = process.env.REACT_APP_API_URL;
 
-// A function to send the login request to the server 
+// A function to send the login request to the server
 const logIn = async (formData) => {
   const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(formData)
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(formData),
   };
   const response = await fetch(`${api_url}/api/employee/login`, requestOptions);
   return response;
-}
+};
 
 // A function to log out the user
 const logOut = () => {
   localStorage.removeItem("employee");
+  window.location.reload();
 };
 
-// Export the functions 
+// Export the functions
 const loginService = {
   logIn,
-  logOut
-}
+  logOut,
+};
 export default loginService;

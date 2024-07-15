@@ -28,6 +28,14 @@ async function getCustomerById(customerId) {
   return rows;
 }
 
+// Get a single customer by Email
+async function getCustomerByEmail(customerEmail) {
+  const query =
+    "SELECT * FROM customer_identifier INNER JOIN customer_info ON customer_identifier.customer_id = customer_info.customer_id WHERE customer_identifier.customer_email = ?";
+  const [rows] = await conn.query(query, [customerEmail]);
+  return rows;
+}
+
 // Add a new customer
 async function addCustomer(customerData) {
   // Use the uuid to do random customer hash
@@ -81,9 +89,24 @@ async function updateCustomer(customerId, customerData) {
   return { customer_id: customerId, ...customerData };
 }
 
+// Customer Order tracking
+async function getCustomerOrders(customerId) {
+  const query = `
+    SELECT o.*, oi.estimated_completion_date, oi.completion_date
+    FROM orders o
+    INNER JOIN order_info oi ON o.order_id = oi.order_id
+    WHERE o.customer_id = ?
+    ORDER BY o.order_date DESC
+  `;
+  const rows = await conn.query(query, [customerId]);
+  return rows;
+}
+
 module.exports = {
   getAllCustomers,
   getCustomerById,
   addCustomer,
   updateCustomer,
+  getCustomerByEmail,
+  getCustomerOrders,
 };
